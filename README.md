@@ -1,66 +1,34 @@
-## Foundry
+# Mightyfi Contracts
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+Mighty Finance is a DeFi platform designed for concentrated liquidity market making (CLMM) with leveraged positions.
+It enables users to open leveraged positions, maximizing capital efficiency.
 
-Foundry consists of:
+## Contracts Structure
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
-
-## Documentation
-
-https://book.getfoundry.sh/
-
-## Usage
-
-### Build
-
-```shell
-$ forge build
+```
+├── AddressRegistry.sol
+├── IndividualPosition.sol
+├── MightyTimelockController.sol ## multisig, timelock
+├── PaymentsUpgradeable.sol
+├── PrimaryPriceOracle.sol
+├── VaultRegistry.sol
+├── lendingpool
+├── interfaces
+├── libraries
+├── mock   ## Mock Contracts for testing
+├── shadow ## Shadow range (uni-v3) leverage vault and implementaion
+├── swapx  ## In Development
+└── viewer ## Viewer contract using from front-end
 ```
 
-### Test
+### Core contracts
 
-```shell
-$ forge test
-```
-
-### Format
-
-```shell
-$ forge fmt
-```
-
-### Gas Snapshots
-
-```shell
-$ forge snapshot
-```
-
-### Anvil
-
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+| Contract Name              | Description                                                                                                                                                                                 |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `AddressRegistry`          | A central registry that stores the addresses of key contracts within the protocol for easy reference and access.                                                                            |
+| `IndividualPosition`       | A user-specific position contract created by the Vault. Managed via proxy pattern, with its logic delegated to a separate implementation contract.                                          |
+| `MightyTimelockController` | A governance contract managing permissions for proxy upgrades and critical protocol settings. Based on OpenZeppelin's `TimelockController`, supporting multisig and timelock functionality. |
+| `PaymentsUpgradeable`      | A utility contract that standardizes and unifies token transfers (both ERC20 and native tokens like ETH) using `transfer` and `transferFrom`.                                               |
+| `PrimaryPriceOracle`       | The main oracle contract that provides price feeds for the protocol’s internal calculations.                                                                                                |
+| `VaultRegistry`            | A registry contract that manages and tracks Vault IDs. Vaults must be registered after deployment to be recognized by the protocol.                                                         |
+| `LendingPool`              | A forked version of ExtraFi’s lending pool, designed to accept deposits of a single token. Vault contracts can borrow from it to create leveraged positions.                                |
